@@ -5,7 +5,7 @@ responsive image with zoomed image on hover.
 
 [demo](http://htmlpreview.github.io/?https://github.com/Intera/vue-zoom-on-hover/blob/master/demo/main.html)
 
-this component displays an image with the width of the parent element and on hover shows the full image or a scaled image in the image area.
+this [vue.js](https://vuejs.org/) component displays an image with the width of the parent element and on hover shows the full image or a scaled image in the image area
 
 # files
 `zoom-on-hover.vue` is the single-file component. a non-single-file version can be extracted from `demo/main.html`

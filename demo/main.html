@@ -1,5 +1,7 @@
 <html>
   <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <style>
      .zoom-on-hover {
@@ -28,7 +30,7 @@
       </div>
       <h2>disabled</h2>
       <div style="width:400px">
-        <zoom-on-hover img-normal="image.jpg" :disabled= true></zoom-on-hover>
+        <zoom-on-hover img-normal="image.jpg" :disabled="true"></zoom-on-hover>
       </div>
     </div>
     <script type="text/x-template" id="zoom-on-hover-template">
@@ -91,7 +93,6 @@
 			           this.scaleFactor = parseInt(this.$props.scale)
 			           this.$refs.zoom.style.transform = "scale(" + this.scaleFactor + ")"
 		         }
-             console.log(this.imgNormal)
 	       }
      });
      new Vue({
