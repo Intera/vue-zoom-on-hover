@@ -1,7 +1,7 @@
 # vue-zoom-on-hover
 responsive image with zoomed image on hover.
 
-![example image](demo/image.jpg?raw=true)
+![example image](demo/example.png?raw=true)
 
 [demo](http://htmlpreview.github.io/?https://github.com/Intera/vue-zoom-on-hover/blob/master/demo/main.html)
 
