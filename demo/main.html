@@ -2,21 +2,9 @@
   <head>
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
     <meta content="utf-8" http-equiv="encoding">
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
-    <style>
-     .zoom-on-hover {
-         position: relative;
-         overflow: hidden;
-     }
-     .zoom-on-hover .normal {
-		     width: 100%;
-	   }
-	   .zoom-on-hover .zoom {
-		     position: absolute;
-		     opacity: 0;
-         transform-origin: top left;
-	   }
-    </style>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+    <script type="text/javascript" src="../zoomOnHover.js"></script>
+    <link rel="stylesheet" type="text/css" href="../zoomOnHover.css"/>
   </head>
   <body>
     <div id="app">
@@ -33,71 +21,13 @@
         <zoom-on-hover img-normal="image.jpg" :disabled="true"></zoom-on-hover>
       </div>
     </div>
-    <script type="text/x-template" id="zoom-on-hover-template">
-      <div class="zoom-on-hover" @mousemove="move" @mouseenter="zoom" @mouseleave="unzoom">
-	      <img class="normal" ref="normal" :src="imgNormal"/>
-	      <img class="zoom" ref="zoom" :src="imgZoom || imgNormal"/>
-      </div>
-    </script>
     <script>
-     /* this component displays an image with the width of the parent element and on hover
-        shows the full image or a scaled image in the image area.
-        features: activate/deactivate method, active/inactive on load, scale parameter, separate zoom image
-        caveats: if the parent container is bigger than the source image, the normal image stretches to the size of the parent container, but the zoom image will have the normal image scaled width (will be smaller for example) */
-
-     function pageOffset(el) {
-	       // -> {x: number, y: number}
-	       // get the left and top offset of a dom block element
-         var rect = el.getBoundingClientRect(),
-			       scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-			       scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-         return { y: rect.top + scrollTop, x: rect.left + scrollLeft }
-     }
-
-     Vue.component('zoom-on-hover', {
-         template: '#zoom-on-hover-template',
-         props: ['imgNormal', 'imgZoom', 'scale', 'disabled'],
-	       data() {
-		         return {
-			           scaleFactor: 1
-		         }
-	       },
-         methods: {
-		         zoom() {
-			           if(this.disabled) return
-			           this.$refs.zoom.style.opacity = 1
-			           this.$refs.normal.style.opacity = 0
-		         },
-		         unzoom() {
-			           if(this.disabled) return
-			           this.$refs.zoom.style.opacity = 0
-			           this.$refs.normal.style.opacity = 1
-		         },
-             move(event) {
-			           if(this.disabled) return
-			           var offset = pageOffset(this.$el)
-			           var zoom = this.$refs.zoom
-			           var normal = this.$refs.normal
-			           var relativeX = event.clientX - offset.x + window.scrollX
-			           var relativeY = event.clientY - offset.y + window.scrollY
-			           var normalPercentX = relativeX / normal.offsetWidth
-			           var normalPercentY = relativeY / normal.offsetHeight
-			           var x = normalPercentX * (zoom.offsetWidth * this.scaleFactor - normal.offsetWidth)
-			               var y = normalPercentY * (zoom.offsetHeight * this.scaleFactor - normal.offsetHeight)
-                     zoom.style.left = -x + "px"
-                 zoom.style.top = -y + "px"
-             }
-         },
-	       mounted() {
-		         if(this.$props.scale) {
-			           this.scaleFactor = parseInt(this.$props.scale)
-			           this.$refs.zoom.style.transform = "scale(" + this.scaleFactor + ")"
-		         }
-	       }
-     });
-     new Vue({
-	       el: '#app'
-     })
+      new Vue({
+        el: "#app",
+	      components: {
+		      zoomOnHover: zoomOnHover
+        }
+      })
     </script>
   </body>
 </html>

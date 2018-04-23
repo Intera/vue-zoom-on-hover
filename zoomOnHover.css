@@ -1,0 +1,12 @@
+.zoom-on-hover {
+  position: relative;
+  overflow: hidden;
+}
+.zoom-on-hover .normal {
+  width: 100%;
+}
+.zoom-on-hover .zoom {
+  position: absolute;
+  opacity: 0;
+  transform-origin: top left;
+}
