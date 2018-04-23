@@ -11,7 +11,7 @@ this [vue.js](https://vuejs.org/) component displays an image with the width of 
 `zoomOnHover.js` registers the vue component and defines zoomOnHover, a variable for the component configuration object. `zoomOnHover.css` contains the needed styles
 
 # usage
-minimal example (with an example <div> as parent container)
+minimal example (with an example div as parent container)
 ```html
 <div style="width:400px">
   <zoom-on-hover img-normal="image.jpg"></zoom-on-hover>
