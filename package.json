@@ -1,0 +1,19 @@
+{
+  "name": "@intera/vue-zoom-on-hover",
+  "version": "1.0.0",
+  "description": "vue.js component that shows the full image or a scaled image in the image area on hover",
+  "main": "zoomOnHover.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Intera/vue-zoom-on-hover.git"
+  },
+  "author": "Julian Kalbhenn",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Intera/vue-zoom-on-hover/issues"
+  },
+  "homepage": "https://github.com/Intera/vue-zoom-on-hover#readme"
+}
