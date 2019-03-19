@@ -33,3 +33,6 @@ all options
 
 # caveats
 if the parent container is bigger than the source image, the normal image stretches to the size of the parent container but the zoom image will have the original width (will be smaller for example)
+
+# possible enhancements
+* support for touch devices
