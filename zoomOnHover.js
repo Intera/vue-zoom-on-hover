@@ -17,10 +17,12 @@ function pageOffset(el) {
 
 var zoomOnHover = {
 	props: ["imgNormal", "imgZoom", "scale", "disabled"],
-	template: "<div class=\"zoom-on-hover\" @mousemove=\"move\" @mouseenter=\"zoom\" @mouseleave=\"unzoom\">" +
-		"<img class=\"normal\" ref=\"normal\" :src=\"imgNormal\"/>" +
-		"<img class=\"zoom\" ref=\"zoom\" :src=\"imgZoom || imgNormal\"/>" +
-		"</div>",
+	template: `
+		<div class="zoom-on-hover" @mousemove="move" @mouseenter="zoom" @mouseleave="unzoom">
+			<img class="normal" ref="normal" :src="imgNormal"/> 
+			<img class="zoom" ref="zoom" :src="imgZoom || imgNormal"/> 
+		</div>
+	`,
 	data: function () {
 		return {
 			scaleFactor: 1,
