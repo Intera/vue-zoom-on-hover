@@ -10,3 +10,9 @@
   opacity: 0;
   transform-origin: top left;
 }
+.zoom-on-hover.zoomed .zoom {
+  opacity: 1;
+}
+.zoom-on-hover.zoomed .normal {
+  opacity: 0;
+}
