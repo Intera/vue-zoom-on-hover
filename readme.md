@@ -7,8 +7,9 @@ responsive image with zoomed image on hover.
 
 this [vue.js](https://vuejs.org/) component displays an image with the width of the parent element and on hover shows the full image or a scaled image in the image area
 
-# files
-`zoomOnHover.js` registers the vue component and defines zoomOnHover, a variable for the component configuration object. `zoomOnHover.css` contains the needed styles
+# installation
+include `zoomOnHover.js`, which registers the vue component and defines zoomOnHover, the variable for the component configuration object.
+also include `zoomOnHover.css`, which contains the needed styles
 
 # usage
 minimal example (with an example div as parent container)
@@ -24,12 +25,25 @@ all options
   @loaded="onload" @resized="onresize"></zoom-on-hover>
 ```
 
+register the component with your vue app or component
+```javascript
+new Vue({
+  el: "#app",
+  components: {
+    zoomOnHover: zoomOnHover
+  }
+})
+```
+
+you can also check out demo/main.html for an example
+
 # features
 * enabled/disabled property
 * custom scale for zoomed image
 * optionally a separate zoom image
 * event when all images loaded
 * event when images resized (responsive css, etc)
+* basic touch support with zoom/unzoom on tap
 
 # caveats
 if the parent container is bigger than the source image, the normal image stretches to the size of the parent container but the zoom image will have the original width (will be smaller for example)
