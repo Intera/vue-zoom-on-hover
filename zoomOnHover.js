@@ -16,11 +16,11 @@ function pageOffset(el) {
 }
 
 var zoomOnHover = {
-  props: ["imgNormal", "imgZoom", "scale", "disabled"],
+  props: ["imgNormal", "imgZoom", "scale", "disabled", "altText"],
   template: `<div class="zoom-on-hover" v-bind:class="{zoomed}" @touchstart="touchzoom"
     @mousemove="move" @mouseenter="zoom" @mouseleave="unzoom">
-    <img class="normal" ref="normal" :src="imgNormal"/>
-    <img class="zoom" ref="zoom" :src="imgZoom || imgNormal"/></div>`,
+    <img class="normal" ref="normal" :src="imgNormal" :alt="altText"/>
+    <img class="zoom" ref="zoom" :src="imgZoom || imgNormal" :alt="altText"/></div>`,
   data: function() {
     return {
       scaleFactor: 1,
