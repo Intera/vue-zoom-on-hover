@@ -1,9 +1,20 @@
 ﻿<template>
-    <div :class="['zoom-on-hover', {zoomed}]" @touchstart="touchzoom"
-    @mousemove="move" @mouseenter="zoom" @mouseleave="unzoom">
-        <img class="normal" ref="normal" :src="src" @load="load"/>
-        <img class="zoom" ref="zoom" :src="imgZoom || src" @load="loadZoom"/>
-    </div>
+  <div
+    :class="['zoom-on-hover', { zoomed }]"
+    @touchstart="touchzoom"
+    @mousemove="move"
+    @mouseenter="zoom"
+    @mouseleave="unzoom"
+  >
+    <img class="normal" ref="normal" :src="src" @load="load" />
+    <img
+      class="zoom"
+      ref="zoom"
+      :src="imgZoom || src"
+      @load="loadZoom"
+      :style="{ left: zoomLeft, top: zoomTop }"
+    />
+  </div>
 </template>
 
 <script>
@@ -13,179 +24,193 @@
 // event when all images loaded, event when images resized (responsive css, etc)
 // https://github.com/Intera/vue-zoom-on-hover
 
-    export default {
-        props: {
-            src: {
-                type: String,
-                required: true
-            },
+export default {
+  props: {
+    src: {
+      type: String,
+      required: true,
+    },
 
-            imgZoom: {
-                type: String
-            },
+    imgZoom: {
+      type: String,
+    },
 
-            scale: {
-                type: Number,
-                default: 3
-            },
+    scale: {
+      type: Number,
+      default: 3,
+    },
 
-            disabled: {
-                type: Boolean,
-                default: false,
-            }
-        },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
-        data() {
-            return {
-                resizeCheckInterval: null,
-                zoomed: false,
-                loaded: false,
-                loadedZoom: false
-            }
-        },
+  data() {
+    return {
+      resizeCheckInterval: null,
+      zoomed: false,
+      loaded: false,
+      loadedZoom: false,
+      zoomLeft: "0px",
+      zoomTop: "0px",
+    };
+  },
 
-        mounted() {
-            this.initEventResized();
-            this.handleScaleChange();
-        },
+  mounted() {
+    this.initEventResized();
+    this.handleScaleChange();
+  },
 
-        beforeDestroy() {
-            this.resizeCheckInterval && clearInterval(this.resizeCheckInterval);
-        },
+  beforeDestroy() {
+    this.resizeCheckInterval && clearInterval(this.resizeCheckInterval);
+  },
 
-        computed: {
-            pageOffset() {
-                // -> {x: number, y: number}
-                // get the left and top offset of a dom block element
-                const rect = this.$el.getBoundingClientRect(),
-                    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-                    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  computed: {
+    pageOffset() {
+      // -> {x: number, y: number}
+      // get the left and top offset of a dom block element
+      const rect = this.$el.getBoundingClientRect(),
+        scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+        scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-                return {
-                    y: rect.top + scrollTop,
-                    x: rect.left + scrollLeft
-                }
-            }
-        },
+      return {
+        y: rect.top + scrollTop,
+        x: rect.left + scrollLeft,
+      };
+    },
 
-        watch: {
-            src() {
-                this.loaded = false;
-            },
+    imagesLoaded() {
+      return this.loaded && this.loadedZoom;
+    },
+  },
 
-            scale: {
-                immediate: true,
-                handler() {
-                    this.handleScaleChange();
-                }
-            }
-        },
+  watch: {
+    src() {
+      this.loaded = false;
+      this.loadedZoom = false;
+      this.zoomed = false;
+    },
 
-        methods: {
-            handleScaleChange() {
-                if (this.$refs?.zoom) {
-                    this.$refs.zoom.style.transform = "scale(" + this.scale + ")"
-                }
-            },
+    scale: {
+      immediate: true,
+      handler() {
+        this.handleScaleChange();
+      },
+    },
+  },
 
-            touchzoom(event) {
-                if (this.disabled) {
-                    return;
-                }
+  methods: {
+    handleScaleChange() {
+      if (this.$refs?.zoom) {
+        this.$refs.zoom.style.transform = "scale(" + this.scale + ")";
+      }
+    },
 
-                this.move(event)
-                this.zoomed = !this.zoomed
-            },
+    touchzoom(event) {
+      if (!this.imagesLoaded || this.disabled) {
+        return;
+      }
 
-            zoom() {
-                if (!this.disabled) {
-                    this.zoomed = true;
-                }
-            },
+      this.move(event);
+      this.zoomed = !this.zoomed;
+    },
 
-            unzoom() {
-                if (!this.disabled) {
-                    this.zoomed = false;
-                }
-            },
+    zoom() {
+      if (this.imagesLoaded && !this.disabled) {
+        this.zoomed = true;
+      }
+    },
 
-            move(event) {
-                if (this.disabled || !this.zoomed) {
-                    return;
-                }
+    unzoom() {
+      if (this.imagesLoaded && !this.disabled) {
+        this.zoomed = false;
+      }
+    },
 
-                const offset = this.pageOffset;
-                const zoom = this.$refs.zoom;
-                const normal = this.$refs.normal;
-                const relativeX = event.clientX - offset.x + window.pageXOffset;
-                const relativeY = event.clientY - offset.y + window.pageYOffset;
-                const normalFactorX = relativeX / normal.offsetWidth;
-                const normalFactorY = relativeY / normal.offsetHeight;
-                const x = normalFactorX * (zoom.offsetWidth * this.scale - normal.offsetWidth);
-                const y = normalFactorY * (zoom.offsetHeight * this.scale - normal.offsetHeight);
-                zoom.style.left = -x + "px";
-                zoom.style.top = -y + "px";
-            },
+    move(event) {
+      const zoom = this.$refs.zoom;
+      const normal = this.$refs.normal;
 
-            load(e) {
-                this.loaded = true;
-                this.checkLoaded(e);
-            },
+      if (this.disabled || !this.zoomed || !zoom || !normal) {
+        return;
+      }
 
-            loadZoom(e) {
-                this.loadedZoom = true;
-                this.checkLoaded(e);
-            },
+      const offset = this.pageOffset;
+      const relativeX = event.clientX - offset.x + window.pageXOffset;
+      const relativeY = event.clientY - offset.y + window.pageYOffset;
+      const normalFactorX = relativeX / normal.offsetWidth;
+      const normalFactorY = relativeY / normal.offsetHeight;
+      const x =
+        normalFactorX * (zoom.offsetWidth * this.scale - normal.offsetWidth);
+      const y =
+        normalFactorY * (zoom.offsetHeight * this.scale - normal.offsetHeight);
+      this.zoomLeft = -x + "px";
+      this.zoomTop = -y + "px";
+    },
 
-            checkLoaded(e) {
-                if (this.loaded && this.loadedZoom) {
-                    this.$emit("load", e);
-                }
-            },
+    load(e) {
+      this.loaded = true;
+      this.checkLoaded(e);
+    },
 
-            initEventResized() {
-                const normal = this.$refs.normal;
-                let previousWidth = normal.offsetWidth;
-                let previousHeight = normal.offsetHeight;
+    loadZoom(e) {
+      this.loadedZoom = true;
+      this.checkLoaded(e);
+    },
 
-                this.resizeCheckInterval = setInterval(() => {
-                    if ((previousWidth != normal.offsetWidth) || (previousHeight != normal.offsetHeight)) {
-                        previousWidth = normal.offsetWidth
-                        previousHeight = normal.offsetHeight
-                        this.$emit("resized", {
-                            width: normal.width,
-                            height: normal.height,
-                            fullWidth: normal.naturalWidth,
-                            fullHeight: normal.naturalHeight
-                        })
-                    }
-                }, 1000)
-            },
-        },
-    }
+    checkLoaded(e) {
+      if (this.imagesLoaded) {
+        this.$emit("load", e);
+      }
+    },
+
+    initEventResized() {
+      const normal = this.$refs.normal;
+      let previousWidth = normal.offsetWidth;
+      let previousHeight = normal.offsetHeight;
+
+      this.resizeCheckInterval = setInterval(() => {
+        if (
+          previousWidth != normal.offsetWidth ||
+          previousHeight != normal.offsetHeight
+        ) {
+          previousWidth = normal.offsetWidth;
+          previousHeight = normal.offsetHeight;
+          this.$emit("resized", {
+            width: normal.width,
+            height: normal.height,
+            fullWidth: normal.naturalWidth,
+            fullHeight: normal.naturalHeight,
+          });
+        }
+      }, 1000);
+    },
+  },
+};
 </script>
 
 <style scoped>
-    .zoom-on-hover {
-        position: relative;
-        overflow: hidden;
-    }
+.zoom-on-hover {
+  position: relative;
+  overflow: hidden;
+}
 
-    .zoom-on-hover .normal {
-        width: 100%;
-    }
+.zoom-on-hover .normal {
+  width: 100%;
+}
 
-    .zoom-on-hover .zoom {
-        position: absolute;
-        opacity: 0;
-        transform-origin: top left;
-    }
+.zoom-on-hover .zoom {
+  position: absolute;
+  opacity: 0;
+  transform-origin: top left;
+}
 
-    .zoom-on-hover.zoomed .zoom {
-        opacity: 1;
-    }
+.zoom-on-hover.zoomed .zoom {
+  opacity: 1;
+}
 
-    .zoom-on-hover.zoomed .normal {
-        opacity: 0;
-    }
+.zoom-on-hover.zoomed .normal {
+  opacity: 0;
+}
 </style>
